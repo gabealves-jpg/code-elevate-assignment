@@ -3,7 +3,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.utils import AnalysisException
 import os
-from analysis import analyze_data
+import analyze_data
 
 
 spark = SparkSession.builder.appName("CodeElevate").getOrCreate()

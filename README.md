@@ -68,6 +68,7 @@ Para rodar este projeto localmente utilizando Docker, siga os passos abaixo:
       export AWS_ACCESS_KEY_ID=''
       export AWS_SECRET_ACCESS_KEY='''
       ```
+    * OU: Aponte para o access_log que você possuir no ínicio do script em main_docker.py
 
 ## ▶️ Executando o Projeto (Docker)
 
@@ -80,10 +81,20 @@ docker-compose up --build
 ## ⚙️ Configuração do Ambiente (Databricks)
 Caso queira rodar o projeto utilizando o Databricks, siga os passos abaixo:
 
-1.  **No Databricks você pode: clonar o repositório, ou importar os arquivos:**
+1.  **No Databricks você pode: clonar o repositório, ou importar os arquivos diretamente na sua workspace;**
 
-2. **Sete as variáveis de ambiente no começo do notebook 'main_dtb', conforme enviado por e-mail.**
-Foto
+2.  **Utilize o arquivo de log no S3 ou configure os caminhos necessários para o notebook 'main_dtb':**
+    *   **Caminho do arquivo de log (`access_log`):** Você pode definir uma variável com as keys (conforme enviado por e-mail) OU modificar diretamente a variável `file_path` no início do script `main_dtb.ipynb` para apontar para o seu arquivo de log.
+    Databricks:
+    <img src="docker-solution/resources/dtb_notebook.png" alt="Detabricks" width="50%" height="auto">
+    Docker: 
+    <img src="docker-solution/resources/docker.png" alt="Docker" width="50%" height="auto">
+    *   **Caminho de saída no S3:** Ainda assim, você DEVE definir a variável de ambiente correspondente (conforme enviado por e-mail) para que o notebook possa salvar os resultados no S3. Conforme abaixo:
+
+2. **Sete as variáveis de ambiente no começo do notebook 'main_dtb', conforme enviado por e-mail. OU: Aponte para o access_log que você possuir no ínicio do script em main_dtb.ipynb (em file_path): Ainda assim, precisará da variável de ambiente para salvar no S3**
+
+
+
 
 3. **Clique para executar tudo. Já está em ordem. Os resultados serão printados na tela**
 

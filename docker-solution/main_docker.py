@@ -4,13 +4,15 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.utils import AnalysisException
 from analysis import analyze_data
 
+file_path = 'resources/access_log.txt'
+
 # Updated SparkSession configuration
 spark = SparkSession.builder \
             .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:3.3.4") \
             .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")\
             .getOrCreate()
             
-def process_data() -> DataFrame:
+def process_data(file_path) -> DataFrame:
     """
     Processa o arquivo de log que já está setado na função. 
     Utiliza regex para fazer o parsing dos dados dentro do arquivo de log.
@@ -18,7 +20,7 @@ def process_data() -> DataFrame:
     Além disso, salva o dataframe em...{a definir}
 
     Args:
-        None
+        file_path (str): Caminho para o arquivo de log.
 
     Returns:
         df (pyspark.sql.DataFrame): DataFrame com os dados processados.
@@ -29,7 +31,7 @@ def process_data() -> DataFrame:
         AnalysisException: Se houver um erro no processamento Spark.
     """
     try:
-        raw_df = spark.read.text('resources/access_log.txt')
+        raw_df = spark.read.text(file_path)
         if raw_df.count() == 0:
             raise ValueError("O arquivo de log está vazio")
 
@@ -83,7 +85,7 @@ def save_data(df: DataFrame) -> None:
 def main():
 
     #Processing & Saving
-    df = process_data()
+    df = process_data(file_path)
     #Saving
     save_data(df)
     #Analysis

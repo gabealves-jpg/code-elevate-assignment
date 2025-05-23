@@ -4,7 +4,7 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.utils import AnalysisException
 from analysis import analyze_data
 
-file_path = 'resources/access_log.txt'
+file_path = 's3a://codelevate/raw/access_log.txt'
 
 # Updated SparkSession configuration
 spark = SparkSession.builder \
@@ -71,12 +71,14 @@ def save_data(df: DataFrame) -> None:
     Raises:
         Exception: Ao falhar o save de dados
     """
+
     try:
         df.write \
             .format("parquet") \
             .mode("overwrite") \
             .partitionBy("dat_mes_carga") \
             .save("s3a://codelevate/bronze/")
+
         print("Salvo com sucesso")
     except Exception as e:
         print(f"Erro ao salvar: {str(e)}")
@@ -84,7 +86,7 @@ def save_data(df: DataFrame) -> None:
 
 def main():
 
-    #Processing & Saving
+    #Processing
     df = process_data(file_path)
     #Saving
     save_data(df)

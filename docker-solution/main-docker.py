@@ -2,13 +2,15 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.utils import AnalysisException
-import os
-import analyze_data
+from analysis import analyze_data
 
-
-spark = SparkSession.builder.appName("CodeElevate").getOrCreate()
-
-def process_and_save_data() -> DataFrame:
+# Updated SparkSession configuration
+spark = SparkSession.builder \
+            .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:3.3.4") \
+            .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")\
+            .getOrCreate()
+            
+def process_data() -> DataFrame:
     """
     Processa o arquivo de log que já está setado na função. 
     Utiliza regex para fazer o parsing dos dados dentro do arquivo de log.
@@ -31,14 +33,15 @@ def process_and_save_data() -> DataFrame:
         if raw_df.count() == 0:
             raise ValueError("O arquivo de log está vazio")
 
+        log_pattern = r'^(\S+).*\[(.*?)\].*"(\w+)\s+([^\s]+)[^"]*"\s+(\d+)\s+(\S+)'
 
         df = raw_df.select(
-            F.regexp_extract('value', r'^(\S+)', 1).alias('ip'),
-            F.regexp_extract('value', r'\[(.*?)\]', 1).alias('time'),
-            F.regexp_extract('value', r'"(\w+)\s+([^\s]+)[^"]*"', 1).alias('method'),
-            F.regexp_extract('value', r'"(\w+)\s+([^\s]+)[^"]*"', 2).alias('path'),
-            F.regexp_extract('value', r'"[^"]*" (\d+)', 1).alias('status'),
-            F.regexp_extract('value', r'"[^"]*" \d+ (\S+)', 1).alias('size'))
+             F.regexp_extract('value', log_pattern, 1).alias('ip'),
+             F.regexp_extract('value', log_pattern, 2).alias('timestamp'),
+             F.regexp_extract('value', log_pattern, 3).alias('method'),
+             F.regexp_extract('value', log_pattern, 4).alias('path'),
+             F.regexp_extract('value', log_pattern, 5).alias('status'),
+             F.regexp_extract('value', log_pattern, 6).alias('size'))
 
     except FileNotFoundError as e:
         print(f"Erro ao acessar arquivo: {str(e)}")
@@ -49,14 +52,40 @@ def process_and_save_data() -> DataFrame:
 
     #Trocando valores "-" por 0    
     df = df.withColumn('size', F.when(F.col('size') == '-', '0').otherwise(F.col('size')).cast("integer"))
-
+    #Cria coluna de dat_mes_carga para particionamento. Para este case, irei simular que o 'timestamp' será o dat_ref_carga.
+    df = df.withColumn('dat_mes_carga', F.date_format(F.to_timestamp(F.col('timestamp'), 'dd/MMM/yyyy:HH:mm:ss Z'),'MM/yyyy'))
+    
+    df.cache()
 
     return df
+
+def save_data(df: DataFrame) -> None:
+    """
+    Salva o dataframe no OpenSearch.
+    Args:
+        df (pyspark.sql.DataFrame): DataFrame com os dados processados.
+    Returns:
+        None
+    Raises:
+        Exception: Ao falhar o save de dados
+    """
+    try:
+        df.write \
+            .format("parquet") \
+            .mode("overwrite") \
+            .partitionBy("dat_mes_carga") \
+            .save("s3a://codelevate/bronze/")
+        print("Salvo com sucesso")
+    except Exception as e:
+        print(f"Erro ao salvar: {str(e)}")
+        raise
 
 def main():
 
     #Processing & Saving
-    df = process_and_save_data()
+    df = process_data()
+    #Saving
+    save_data(df)
     #Analysis
     analyze_data(df)
     

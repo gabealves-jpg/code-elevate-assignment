@@ -1,1 +1,3 @@
-polars
+pyspark==3.5.0
+elasticsearch-spark-30==8.9.0
+delta-spark

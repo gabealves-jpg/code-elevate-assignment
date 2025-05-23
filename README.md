@@ -4,14 +4,13 @@ Projeto para o Code Elevate
 
 ## 📜 Sumário
 
-*   [Visão Geral do Projeto](#-visão-geral-do-projeto)
+*   [🌐Visão Geral do Projeto](#-visão-geral-do-projeto)
 *   [🎯 Desafio](#-desafio)
 *   [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 *   [⚙️ Configuração do Ambiente (Docker)](#️-configuração-do-ambiente-docker)
 *   [▶️ Executando o Projeto (Docker](#️-executando-o-projeto-docker)
-*   [⚙️ (OPCIONAL) Configuração do Ambiente (Databricks)](#️-configuração-do-ambiente-databricks)
-*   [▶️ (OPCIONAL) Executando o Projeto (Databricks)](#️-executando-o-projeto-databricks)
-*   [⚠️ Algumas observações](#️-algumas-observacoes)
+*   [⚙️ (OPCIONAL) Configuração e execuntando o ambiente Databricks](#️-configurando-e-executando-o-ambiente-databricks)
+*   [⚠️ Algumas observações](#️-algumas-observações)
 *   [📂 Estrutura do Projeto](#-estrutura-do-projeto)
 
 ## 🌐 Visão Geral do Projeto
@@ -77,7 +76,7 @@ No mesmo terminal que foi setada a variável de ambiente e com o Docker e Docker
 docker-compose up --build
 ```
 
-## ⚙️ Configuração do Ambiente (Databricks)
+## ⚙️ Configuração e Executando o Ambiente (Databricks)
 Caso queira rodar o projeto utilizando o Databricks, siga os passos abaixo:
 
 1.  **No Databricks você pode: clonar o repositório, ou importar os arquivos diretamente na sua workspace;**

@@ -1,19 +1,47 @@
 # 📊 Análise de Logs Web com Apache Spark 🚀
 
-Projeto para o Code Elevate
+Este repositório contém uma solução para processar e analisar dados de log usando Apache Spark.
 
 ## 📜 Sumário
 
-*   [🌐Visão Geral do Projeto](#-visão-geral-do-projeto)
+*   [📂 Estrutura do Projeto](#-estrutura-do-projeto)
+*   [🌐 Visão Geral](#-visão-geral-do-projeto)
 *   [🎯 Desafio](#-desafio)
 *   [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 *   [⚙️ Configuração do Ambiente (Docker)](#️-configuração-do-ambiente-docker)
 *   [▶️ Executando o Projeto (Docker](#️-executando-o-projeto-docker)
 *   [⚙️ (OPCIONAL) Configuração e execuntando o ambiente Databricks](#️-configurando-e-executando-o-ambiente-databricks)
 *   [⚠️ Algumas observações](#️-algumas-observações)
-*   [📂 Estrutura do Projeto](#-estrutura-do-projeto)
 
-## 🌐 Visão Geral do Projeto
+## 📂 Estrutura do Projeto:
+
+```bash
+code-elevate-assignment/
+│
+├── 📁 docker-solution/                   # Versão Docker + Spark local
+│   ├── Dockerfile                        # Imagem com Apache Spark
+│   ├── docker-compose.yml                # Orquestra os serviços (se necessário)
+│   ├── main_docker.py                    # Script principal para leitura e processamento
+│   ├── analysis.py                       # Funções auxiliares para análise
+│   ├── pytest.ini                        # Configurações de testes com pytest
+│   ├── requirements.txt                  # Dependências Python para execução local
+│   └── 📁 tests/                          # Testes unitários
+│       ├── test_analysis.py              # Testes das funções analíticas
+│       └── test_processing.py            # Testes do processamento inicial
+│
+├── 📁 dtb-solution/                      # Versão Databricks com Delta Lake
+│   ├── main_dtb.ipynb                    # Notebook principal com execução do pipeline
+│   └── analysis.ipynb                    # Funções auxiliares para análise no Databricks
+│
+├── 📁 resources/                         # Recursos de apoio (imagens, logs, etc.)
+│   └── docker.png                        # Print ilustrativo para README
+│
+├── README.md                             # Instruções de uso, arquitetura e justificativas
+└── requirements.txt                      # (opcional) Dependências genéricas do projeto
+
+```
+
+## 🌐 Visão Geral
 
 Este projeto foi desenvolvido como parte de um desafio de Engenharia de Dados. O objetivo principal é analisar um arquivo de log de acesso de servidor web (padrão Web Server Access Log) para responder a perguntas específicas sobre padrões de uso, origens de acesso, endpoints mais visitados, entre outros. A ferramenta central para o processamento dos dados é o Apache Spark, rodando em um ambiente Dockerizado e Databricks, onde construí as duas soluções possíveis, uma para cada caso que falarei mais adiante.
 
@@ -97,5 +125,12 @@ Caso queira rodar o projeto utilizando o Databricks, siga os passos abaixo:
     - Considerei também um AWS RDS (Postgres) para armazenar os dados, mas no fim, não achei que um banco de dados relacional seria o melhor para armazenar essa log, apesar do log ser estruturado e essa solução parecer ser mais fácil que Elastic.
     - Por fim, decidi utilizar o S3, que poderia utilizar tanto no Databricks quando no Docker, e eu poderia abre oportunidades de conectar com o AWS, OpenSearch, Athena e mais uma infinidade de outras soluções. No fim, acabei de replicando o esquema de Lake do Databricks, mas acho que faz sentido para logs.
 
-- Os resultados das perguntas estão salvas como .txt no *Databricks*. Pensei em subir para o S3 na solução do Docker, mas como *esse* S3 não estará facilmente acessível, decidi não prosseguir com essa parte.
+- Os resultados das perguntas estão demonstradas com um logging.info. Para uma melhoria, também poderia salvar o log (ou um .txt file com as respostas) no Databricks. No Docker até poderia subir para o S3 também, mas não seria facilmente acessível.
+
+- Para melhorias futuras: 
+    - Melhorar e adicionar logging, removendo prints, deixando o logging robusto.
+    - Adicionar testes mais abrangentes
+
+
+Obrigado!
 
